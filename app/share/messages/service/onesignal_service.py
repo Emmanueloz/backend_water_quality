@@ -30,8 +30,7 @@ class OneSignalService(SenderServiceRepository):
             app_id=self.config.app_id,
             headings=StringMap(en=notification.title),
             contents=StringMap(en=notification.body),
-            include_external_user_ids=[
-                notification.user_id],  # Debe ser una lista
+            include_external_user_ids=notification.user_ids,  # Debe ser una lista
         )
 
     async def send_notification(self, notification: NotificationBody):

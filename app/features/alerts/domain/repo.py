@@ -5,6 +5,7 @@ from app.features.alerts.domain.model import (
     AlertCreate,
     AlertUpdate,
     AlertQueryParams,
+    InfoForSendEmail,
 )
 
 
@@ -31,4 +32,8 @@ class AlertRepository(ABC):
 
     @abstractmethod
     def delete(self, owner: str, alert_id: str) -> Alert:
+        pass
+
+    @abstractmethod
+    def get_info_for_send_email(self, alert_id: str) -> InfoForSendEmail:
         pass

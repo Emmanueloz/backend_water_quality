@@ -10,7 +10,7 @@ class SenderAlertsRepository(ABC):
     """
 
     @abstractmethod
-    def send_alerts(self, meter_id: str, record: RecordBody) -> None:
+    def send_alerts(self, workspace_id: str, meter_id: str, record: RecordBody) -> None:
         """
         Mark alerts as seen for a specific meter.
         :param meter_id: The ID of the meter.
@@ -59,4 +59,12 @@ class NotificationManagerRepository(ABC):
 
     @abstractmethod
     def update_control_last_sent(self, alert_id: str, last_sent: float):
+        pass
+
+    @abstractmethod
+    def update_notification_status(self, notification_id: str, status: str, aproved_by: str):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, notification_id: str) -> NotificationBody:
         pass

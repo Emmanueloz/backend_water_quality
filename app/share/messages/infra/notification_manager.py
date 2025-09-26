@@ -1,7 +1,7 @@
 from datetime import datetime
 import time
 from firebase_admin import db
-from app.share.messages.domain.model import NotificationBody, NotificationBodyDatetime, NotificationControl, QueryNotificationParams
+from app.share.messages.domain.model import NotificationBody, NotificationBodyDatetime, NotificationControl, QueryNotificationParams, RecordParameter
 from app.share.messages.domain.repo import NotificationManagerRepository
 
 
@@ -60,7 +60,8 @@ class NotificationManagerRepositoryImpl(NotificationManagerRepository):
                     title=notification_data.get("title"),
                     body=notification_data.get("body"),
                     user_id=notification_data.get("user_id"),
-                    datetime=notification_data.get("timestamp")
+                    datetime=notification_data.get("timestamp"),
+                    status=notification_data.get("status") or None
                 )
             else:
                 notification = NotificationBody(**notification_data)
@@ -128,3 +129,48 @@ class NotificationManagerRepositoryImpl(NotificationManagerRepository):
             f'/notifications_control/{alert_id}/last_sent')
 
         ref.set(last_sent)
+
+    def update_notification_status(self, notification_id: str, status: str, aproved_by: str):
+        notification_ref = db.reference(
+            f"/notifications_history/{notification_id}/")
+
+        notification_data = notification_ref.get()
+
+        if notification_data is None:
+            raise ValueError(
+                f"Notification with ID {notification_id} not found.")
+
+        notification_ref.update({"status": status, "aproved_by": aproved_by})
+
+    def get_by_id(self, notification_id: str) -> NotificationBody:
+        notification_ref = db.reference(
+            f"/notifications_history/{notification_id}/")
+
+        notification_data = notification_ref.get()
+
+        if notification_data is None:
+            raise ValueError(
+                f"Notification with ID {notification_id} not found.")
+
+        pre_record_parameters = notification_data.get(
+            "record_parameters") or None
+        record_parameters = []
+        if pre_record_parameters is not None:
+            for record in pre_record_parameters:
+                record_parameters.append(
+                    RecordParameter(parameter=record.get(
+                        "parameter"), value=record.get("value"))
+                )
+
+        notification = NotificationBody(
+            id=notification_id,
+            read=notification_data.get("read"),
+            title=notification_data.get("title"),
+            body=notification_data.get("body"),
+            user_ids=notification_data.get("user_ids"),
+            timestamp=notification_data.get("timestamp"),
+            status=notification_data.get("status"),
+            alert_id=notification_data.get("alert_id"),
+            record_parameters=record_parameters
+        )
+        return notification

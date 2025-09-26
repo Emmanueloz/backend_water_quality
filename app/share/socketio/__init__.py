@@ -49,7 +49,8 @@ async def receive_connection(sid, environ):
 
         query_dict = query_string_to_dict(environ.get("QUERY_STRING") or "")
 
-        token = environ.get("HTTP_ACCESS_TOKEN") or query_dict.get("access_token")
+        token = environ.get(
+            "HTTP_ACCESS_TOKEN") or query_dict.get("access_token")
 
         if not token:
             raise Exception("Access token is required")
@@ -92,7 +93,7 @@ async def receive_message(sid, data: dict):
         background_tasks.add_task(
             sender.send_alerts, payload.id_meter, record_body)
         """
-        await sender.send_alerts(meter_id=payload.id_meter, records=record_body)
+        await sender.send_alerts(workspace_id=payload.id_workspace, meter_id=payload.id_meter, records=record_body)
         await sio.emit(
             "message",
             response.model_dump(mode="json"),
@@ -135,7 +136,8 @@ async def subscribe_connection(sid, environ):
         print(f"📡 Nuevo conexión en subscribe: {sid}")
         query_dict = query_string_to_dict(environ.get("QUERY_STRING") or "")
 
-        token = environ.get("HTTP_ACCESS_TOKEN") or query_dict.get("access_token")
+        token = environ.get(
+            "HTTP_ACCESS_TOKEN") or query_dict.get("access_token")
 
         if not token:
             raise Exception("Access token is required")
@@ -169,7 +171,8 @@ async def subscribe_connection(sid, environ):
 
         # Crear la sala con el email del usuario
         await sio.enter_room(sid, room_name, namespace="/subscribe/")
-        print(f"🔗 Cliente {sid} unido a la sala {room_name} en namespace /subscribe/")
+        print(
+            f"🔗 Cliente {sid} unido a la sala {room_name} en namespace /subscribe/")
 
     except Exception as e:
         print(e.__class__.__name__)

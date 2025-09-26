@@ -1,10 +1,11 @@
 from firebase_admin import db
 import time
 from datetime import datetime, timezone
-from app.share.messages.domain.model import AlertData, NotificationControl,  NotificationBody
+from app.share.messages.domain.model import AlertData, NotificationControl,  NotificationBody, NotificationStatus, RecordParameter
 from app.share.messages.domain.repo import NotificationManagerRepository, SenderAlertsRepository, SenderServiceRepository
 from app.share.messages.domain.validate import RecordValidation
 from app.share.socketio.domain.model import RecordBody
+from app.share.workspace.domain.model import WorkspaceRoles
 
 
 class SenderAlertsRepositoryImpl(SenderAlertsRepository):
@@ -32,6 +33,22 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
             ))
 
         return alerts
+
+    def _get_owner_of_workspace(self, workspace_id: str) -> str:
+        ref = db.reference().child("workspaces").child(workspace_id).child("owner")
+        owner_data = ref.get()
+        return owner_data
+
+    def _get_managers_of_workspace(self, workspace_id: str) -> list[str]:
+        ref = db.reference().child("workspaces").child(workspace_id).child("guests")
+        guests_data = ref.get()
+        if not guests_data:
+            return []
+        managers = []
+        for guest_id, guest in guests_data.items():
+            if guest.get("rol") == WorkspaceRoles.MANAGER:
+                managers.append(guest_id)
+        return managers
 
     def _validate_records(self, meter_id, records: RecordBody) -> list[AlertData]:
         alerts = self._list_alerts_by_meter(meter_id)
@@ -64,8 +81,15 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
             self.notification_manager.reset_control_validation(
                 alert_id=alert.id)
 
-        alerts_validated = [
-            alert for alert in alerts if alert.id in result_validation_alert.alerts_ids]
+        alerts_validated = []
+
+        for alert in alerts:
+            if alert.id in result_validation_alert.alerts_ids:
+                # Add the records of parameters that triggered the alert
+                alert.records_of_parameters = [
+                    RecordParameter(parameter=param_data.parameter, value=param_data.value) for param_data in result_validation_alert.parameters_data if param_data.alert_id == alert.id
+                ]
+                alerts_validated.append(alert)
 
         return alerts_validated
 
@@ -77,7 +101,7 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
 
         return last_date == datetime.now(timezone.utc).date()
 
-    async def send_alerts(self, meter_id: str, records: RecordBody):
+    async def send_alerts(self, workspace_id: str,  meter_id: str, records: RecordBody):
         alert_valid = self._validate_records(meter_id, records=records)
 
         if not alert_valid:
@@ -85,6 +109,11 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
             return
 
         print(alert_valid)
+        # Get the list of managers and owner of the workspace
+        owner = self._get_owner_of_workspace(workspace_id=workspace_id)
+        managers = self._get_managers_of_workspace(workspace_id=workspace_id)
+        recipients = managers + [owner]
+        recipients = self._remove_duplicate_user_ids(recipients)
 
         for alert in alert_valid:
             # Check if the alert is already validated
@@ -99,13 +128,15 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
                 self.notification_manager.update_control_validation(
                     alert_id=alert.id)
                 continue
-
             # Send notification
             notification = NotificationBody(
                 title=alert.title,
                 body=f"Alert Type {alert.type.value.capitalize()} for meter {alert.meter_id}",
-                user_id=alert.user_uid,
-                timestamp=time.time()
+                user_ids=recipients,
+                timestamp=time.time(),
+                status=NotificationStatus.PENDING,
+                alert_id=alert.id,
+                record_parameters=alert.records_of_parameters
             )
 
             await self.sender_service.send_notification(notification)
@@ -123,3 +154,6 @@ class SenderAlertsRepositoryImpl(SenderAlertsRepository):
 
             print(
                 f"Notification sent to {alert.user_uid} for alert {alert.id}")
+
+    def _remove_duplicate_user_ids(self, user_ids: list[str]) -> list[str]:
+        return list(set(user_ids))

@@ -13,13 +13,35 @@ class AlertType(str, Enum):
     EXCELLENT = "excellent"
 
 
+class NotificationStatus(str, Enum):
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    PENDING = "pending"
+
+
+class NotificationStatusData(BaseModel):
+    status: NotificationStatus
+
+
+class ParameterDataForAlert(BaseModel):
+    alert_id: str
+    parameter: str
+    value: float
+
+
 class ResultValidationAlert(BaseModel):
     alerts_ids: list[str] = []
     has_parameters: bool = False
+    parameters_data: list[ParameterDataForAlert] = []
 
 
 class PriorityParameters(list[str], Enum):
     parameters: list[str] = ["ph", "turbidity"]
+
+
+class RecordParameter(BaseModel):
+    parameter: str
+    value: float
 
 
 class AlertData(BaseModel):
@@ -29,6 +51,7 @@ class AlertData(BaseModel):
     type: AlertType
     user_uid: str
     parameters: Parameter | None = None
+    records_of_parameters: list[RecordParameter] = []
 
 
 class NotificationControl(BaseModel):
@@ -42,8 +65,12 @@ class NotificationBody(BaseModel):
     read: bool = False
     title: str
     body: str
-    user_id: str
+    user_ids: list[str]
     timestamp: float | None = None
+    status: NotificationStatus | None = None
+    alert_id: str | None = None
+    record_parameters: list[RecordParameter] = []
+    aproved_by: str | None = None
 
 
 class NotificationBodyDatetime(BaseModel):
@@ -53,6 +80,7 @@ class NotificationBodyDatetime(BaseModel):
     body: str
     user_id: str
     datetime: str | float = None
+    status: NotificationStatus | None = None
 
 
 class QueryNotificationParams(BaseModel):
