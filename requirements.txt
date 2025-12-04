@@ -14,3 +14,4 @@ scikit-learn
 pydantic-ai-slim[openai]
 fpdf2 
 matplotlib >=3.8.0
+prometheus-client==0.23.1
