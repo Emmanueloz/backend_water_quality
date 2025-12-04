@@ -14,3 +14,15 @@ services:
     container_name: node_exporter
     ports:
       - "9100:9100"
+
+  app:
+    build: .
+    container_name: backend_api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
