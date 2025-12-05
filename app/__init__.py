@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from app.share.firebase import FirebaseInitializer
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,8 @@ app.add_middleware(
 app.mount("/socket.io/", socket_app, name="socketio")
 
 
-FirebaseInitializer.initialize(FirebaseConfigImpl())
+if not os.getenv("SKIP_FIREBASE_INIT", "false").lower() == "true":
+    FirebaseInitializer.initialize(FirebaseConfigImpl())
 
 app.include_router(auth_router)
 app.include_router(workspaces_router)

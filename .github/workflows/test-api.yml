@@ -1,0 +1,71 @@
+name: CI - API tests (Postman/Newman)
+
+on: [push, pull_request]
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start FastAPI (uvicorn) in background
+        env:
+          # Set any necessary environment variables here
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_REALTIME_URL: ${{ secrets.FIREBASE_REALTIME_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+          # Firebase Admin SDK credentials
+          FIREBASE_TYPE: ${{ secrets.FIREBASE_TYPE }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
+          FIREBASE_AUTH_URI: ${{ secrets.FIREBASE_AUTH_URI }}
+          FIREBASE_TOKEN_URI: ${{ secrets.FIREBASE_TOKEN_URI }}
+          FIREBASE_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}
+          FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
+          FIREBASE_UNIVERSE_DOMAIN: ${{ secrets.FIREBASE_UNIVERSE_DOMAIN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          # start uvicorn in background and redirect logs to a file
+          uvicorn main:app --host 0.0.0.0 --port 8000 > server.log 2>&1 &
+          # save PID so we can stop it later if needed
+          echo $! > server.pid
+
+      - name: Wait for server ready (healthcheck)
+        run: |
+          for i in {1..30}; do
+            echo "Checking server (attempt $i)..."
+            if curl -sSf http://localhost:8000/; then
+              echo "Server is up!"
+              break
+            fi
+            sleep 1
+          done
+          cat server.log
+
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Run API tests
+        run: |
+          postman collection run "${{ github.workspace }}/postman/collections/Workspaces.json" -e "43350414-b9706473-8ce4-435d-aad9-e27f1adcaf05"
+          # Lint your API using Postman CLI
+          postman api lint 209dea0b-31ab-496b-b9fd-0306585183c5

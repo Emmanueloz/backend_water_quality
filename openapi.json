@@ -1,0 +1,125 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "FastAPI (workspaces subset)", "version": "0.1.0" },
+  "paths": {
+    "/workspaces/": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get Workspaces",
+        "operationId": "get_workspaces_workspaces__get",
+        "security": [{"HTTPBearer": []}],
+        "responses": { "200": { "description": "Successful Response", "content": { "application/json": { "schema": {} } } } }
+      },
+      "post": {
+        "tags": ["Workspaces"],
+        "summary": "Create Workspace",
+        "operationId": "create_workspace_workspaces__post",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WorkspaceCreate" } } } },
+        "security": [{"HTTPBearer": []}],
+        "responses": { "200": { "description": "Successful Response", "content": { "application/json": { "schema": {} } } } }
+      }
+    },
+    "/workspaces/all/": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get All Workspaces",
+        "operationId": "get_all_workspaces_workspaces_all__get",
+        "security": [{"HTTPBearer": []}],
+        "responses": { "200": { "description": "Successful Response" } }
+      }
+    },
+    "/workspaces/{id}": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get Workspace",
+        "operationId": "get_workspace_workspaces__id__get",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "title": "Id" } }],
+        "security": [{"HTTPBearer": []}]
+      },
+      "put": {
+        "tags": ["Workspaces"],
+        "summary": "Update Workspace",
+        "operationId": "update_workspace_workspaces__id__put",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WorkspaceCreate" } } } },
+        "security": [{"HTTPBearer": []}]
+      },
+      "delete": {
+        "tags": ["Workspaces"],
+        "summary": "Delete Workspace",
+        "operationId": "delete_workspace_workspaces__id__delete",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "security": [{"HTTPBearer": []}]
+      }
+    },
+    "/workspaces/public/{workspace_id}/": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get Public Workspace",
+        "parameters": [{ "name": "workspace_id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseWorkspacePublic" } } } } }
+      }
+    },
+    "/workspaces/share/": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get Share Workspace",
+        "security": [{"HTTPBearer": []}],
+        "responses": { "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseWorkspacesShares" } } } } }
+      }
+    },
+    "/workspaces/{id}/guest/": {
+      "get": {
+        "tags": ["Workspaces"],
+        "summary": "Get Guest Workspace",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "security": [{"HTTPBearer": []}],
+        "responses": { "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseGuests" } } } } }
+      },
+      "post": {
+        "tags": ["Workspaces"],
+        "summary": "Create Guest Workspace",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WorkspaceGuestCreate" } } } },
+        "security": [{"HTTPBearer": []}]
+      }
+    },
+    "/workspaces/{id}/guest/{guest}": {
+      "put": {
+        "tags": ["Workspaces"],
+        "summary": "Update Guest Workspace",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "guest", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WorkspaceGuestUpdate" } } } },
+        "security": [{"HTTPBearer": []}]
+      },
+      "delete": {
+        "tags": ["Workspaces"],
+        "summary": "Delete Guest Workspace",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "guest", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "security": [{"HTTPBearer": []}]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WorkspaceCreate": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" }, "type": { "$ref": "#/components/schemas/WorkspaceType", "default": "private" } } },
+      "WorkspaceGuestCreate": { "type": "object", "required": ["guest","rol"], "properties": { "guest": { "type": "string" }, "rol": { "$ref": "#/components/schemas/WorkspaceRoles" } } },
+      "WorkspaceGuestUpdate": { "type": "object", "required": ["rol"], "properties": { "rol": { "$ref": "#/components/schemas/WorkspaceRoles" } } },
+      "WorkspacePublicResponse": { "type": "object", "required": ["id","name"], "properties": { "id": { "type": "string" }, "name": { "type": "string" } } },
+      "ResponseWorkspacePublic": { "type": "object", "required": ["message","workspace"], "properties": { "message": { "type": "string" }, "workspace": { "$ref": "#/components/schemas/WorkspacePublicResponse" } } },
+      "ResponseWorkspacesShares": { "type": "object", "required": ["message","workspaces"], "properties": { "message": { "type": "string" }, "workspaces": { "type": "array", "items": { "$ref": "#/components/schemas/WorkspaceShareResponse" } } } },
+      "WorkspaceShareResponse": { "type": "object", "required": ["name","owner","id","guest"], "properties": { "name": { "type": "string" }, "owner": { "anyOf":[{"type":"string"},{"type":"null"}] }, "type": { "$ref": "#/components/schemas/WorkspaceType" }, "id": { "type": "string" }, "user": { "anyOf":[{"$ref":"#/components/schemas/UserData"},{"type":"null"}] }, "rol": { "anyOf":[{"$ref":"#/components/schemas/WorkspaceRoles"},{"$ref":"#/components/schemas/WorkspaceRolesAll"}], "default":"unknown" }, "guest": { "type": "string" } } },
+      "ResponseGuests": { "type": "object", "required": ["message","guests"], "properties": { "message": { "type": "string" }, "guests": { "type": "array", "items": { "$ref": "#/components/schemas/GuestResponse" } } } },
+      "WorkspaceType": { "type": "string", "enum": ["private","public"] },
+      "WorkspaceRoles": { "type": "string", "enum": ["visitor","manager","administrator"] },
+      "WorkspaceRolesAll": { "type": "string", "enum": ["owner","unknown"] }
+    }
+  }
+}
+
