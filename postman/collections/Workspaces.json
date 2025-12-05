@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "f24dba43-82f9-43c9-81c9-e0e06fb0fe06",
+		"name": "Workspaces",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "33005890-f24dba43-82f9-43c9-81c9-e0e06fb0fe06"
+	},
+	"item": [
+		{
+			"name": "Guest",
+			"item": [
+				{
+					"name": "Get guests",
+					"id": "a045b6b1-db1f-4e0a-9e36-761a014830c9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"guest\":\"emma83ozuna@gmail.com\",\n    \"rol\":\"visitor\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/workspaces/-OWvALKrXt3jHZ1KPbTu/guest/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspaces",
+								"-OWvALKrXt3jHZ1KPbTu",
+								"guest",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create guest",
+					"id": "dcc65765-e3f9-430f-a499-e8a08f6fb468",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"guest\":\"emma83ozuna@gmail.com\",\n    \"rol\":\"visitor\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/workspaces/-OS6uTWD1VQ3XWXYCaHj/guest/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspaces",
+								"-OS6uTWD1VQ3XWXYCaHj",
+								"guest",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update guest",
+					"id": "fc87c6f8-f637-4d45-b2e5-568c76374ee9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rol\":\"visitor\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/workspaces/-OS6uTWD1VQ3XWXYCaHj/guest/HjzZAfEfh5eCdO8JNA4A6y9gpZ32",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspaces",
+								"-OS6uTWD1VQ3XWXYCaHj",
+								"guest",
+								"HjzZAfEfh5eCdO8JNA4A6y9gpZ32"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "4ea28788-f154-48ac-a291-ca9da8410516"
+		},
+		{
+			"name": "Share",
+			"item": [
+				{
+					"name": "Get All share workspaces",
+					"id": "742a9579-3ff7-4245-9898-5c42d32582dd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspaces/share/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspaces",
+								"share",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get workspace public",
+					"id": "87289066-05fe-4dea-a2c5-756a6264abdb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/workspaces/public/-OS6uTWD1VQ3XWXYCaHj/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"workspaces",
+								"public",
+								"-OS6uTWD1VQ3XWXYCaHj",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "f06c5f3a-96eb-49f8-be6f-456098a118f8"
+		},
+		{
+			"name": "Get All",
+			"id": "6f90408d-20fa-46a2-be02-edfe614dd877",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/workspaces/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"workspaces",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Full All",
+			"id": "3daa4641-8288-4133-a6db-b1b9a8d069ee",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/workspaces/all/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"workspaces",
+						"all",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Details",
+			"id": "beceabac-2737-4219-b16a-b40c38f62973",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/workspaces/-OS6uTWD1VQ3XWXYCaHj/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"workspaces",
+						"-OS6uTWD1VQ3XWXYCaHj",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"id": "62c75596-5cfd-4552-a1fe-a08f8629e6e9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Datos reales\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/workspaces/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"workspaces",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"id": "62eedea4-aff7-4db1-80fc-c3a1ccfcfb8f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Prueba 5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/workspaces/-OS6tl9D0kvH03Ffqo7L/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"workspaces",
+						"-OS6tl9D0kvH03Ffqo7L",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "25298f33-9574-4d5b-af45-a957944dd42f",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "677ea697-fc9a-4d1f-858f-3895c6882403",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
