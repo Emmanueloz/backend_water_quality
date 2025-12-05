@@ -1,0 +1,1 @@
+from app.features.monitoring.presentation.routes import monitoring_router

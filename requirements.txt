@@ -1,39 +1,35 @@
-fastapi[standard]
+# Core & API
+fastapi[all]>=0.100.0
 firebase-admin
 PyJWT
 passlib[bcrypt]
 python-dotenv
-pytest
 python-socketio[asyncio]
-httpx
 onesignal-python-api
 resend
+
+# Data Science & AI
 pandas
 numpy
 scikit-learn
 pydantic-ai-slim[openai]
-fpdf2 
-matplotlib >=3.8.0
-# Testing dependencies
+fpdf2
+matplotlib>=3.8.0
+
+# Monitoring
+prometheus-client==0.23.1
+
+# Testing & QA
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
 pytest-cov>=4.0.0
 pytest-mock>=3.10.0
-pytest-xdist>=3.0.0  # For parallel test execution
-pytest-html>=3.1.0   # For HTML test reports
-
-# HTTP testing
+pytest-xdist>=3.0.0
+pytest-html>=3.1.0
 httpx>=0.24.0
 requests-mock>=1.10.0
-
-# FastAPI testing
-fastapi[all]>=0.100.0
-
-# Mock and testing utilities
 factory-boy>=3.2.0
 faker>=18.0.0
-freezegun>=1.2.0  # For time mocking
-
-# Coverage and reporting
+freezegun>=1.2.0
 coverage>=7.0.0
-pytest-benchmark>=4.0.0  # For performance testing
+pytest-benchmark>=4.0.0

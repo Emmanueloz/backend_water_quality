@@ -1,0 +1,10 @@
+groups:
+  - name: ejemplo-alertas
+    rules:
+      - alert: HighCPU
+        expr: rate(node_cpu_seconds_total[2m]) > 0.80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          description: "Uso alto de CPU"

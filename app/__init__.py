@@ -9,6 +9,7 @@ from app.features.workspaces import workspaces_router
 from app.features.meters import meters_router
 from app.features.alerts import alerts_router
 from app.features.users import users_router
+from app.features.monitoring import monitoring_router
 from app.features.analysis import analysis_router
 from app.share.socketio import socket_app
 
@@ -36,6 +37,7 @@ app.include_router(meters_router)
 app.include_router(alerts_router)
 app.include_router(users_router)
 app.include_router(analysis_router)
+app.include_router(monitoring_router)
 
 
 @app.get("/")

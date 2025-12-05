@@ -1,20 +1,37 @@
-# Imagen base de Python
 FROM python:3.12-slim
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar dependencias
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    libblas-dev \
+    liblapack-dev \
+    gfortran \
+    libjpeg62-turbo \
+    zlib1g \
+    python3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 
-# Instalar dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copiar todo el proyecto
 COPY . .
 
-# Exponer el puerto de FastAPI
-EXPOSE 3000
+RUN groupadd -r appuser && useradd -r -g appuser appuser && \
+    chown -R appuser:appuser /app
 
-# Comando para ejecutar FastAPI usando el paquete app/
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "3000"]
+USER appuser
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
